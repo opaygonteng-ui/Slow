@@ -1,371 +1,286 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body {
-    background: url('em.png') center/cover no-repeat fixed;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WINTRUS GACOR - SIMBOL MELEDAK</title>
+    <style>
+        body {
+          background: url('em.png') center/cover no-repeat fixed;
     background-color: #000;
     color: white;
     text-align: center;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 10px;
-    overflow: hidden; /* Mencegah scroll saat modal muncul */
-}
+    overflow: hidden; 
+        }
 
-/* MODAL WELCOME STYLE */
-#welcomeModal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 20000;
-}
+        #welcomeModal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 20000;
+        }
 
-.modal-content {
-    background: linear-gradient(145deg, #1a1a1a, #333);
-    padding: 30px;
-    border-radius: 20px;
-    border: 3px solid gold;
-    box-shadow: 0 0 30px gold;
-    max-width: 320px;
-    width: 90%;
-}
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a1a, #333);
+            padding: 30px; border-radius: 20px; border: 3px solid gold;
+            box-shadow: 0 0 30px gold; max-width: 320px; width: 90%;
+        }
 
-.modal-content h2 { color: gold; margin-bottom: 10px; text-shadow: 0 0 10px orange; }
-.modal-content p { font-size: 18px; margin-bottom: 20px; line-height: 1.5; }
-.gift-text { font-size: 24px; font-weight: bold; color: #00ff00; display: block; margin: 10px 0; }
+        .grid { display: grid; grid-template-columns: repeat(5, 60px); gap: 5px; justify-content: center; margin-top: 10px; }
+        
+        .box {
+            width: 60px; height: 60px;
+            background: rgba(30,30,30,0.8);
+            border: 2px solid gold;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; position: relative; border-radius: 8px;
+            /* Kotak sekarang statis, tidak bergerak */
+        }
 
-.btn-start {
-    background: linear-gradient(#ffe000, #ffa500);
-    border: none;
-    padding: 15px 30px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(255,165,0,0.4);
-}
+        /* Span pembungkus simbol untuk animasi */
+        .symbol-text {
+            display: inline-block;
+            transition: transform 0.2s, opacity 0.2s;
+        }
 
-/* GAME UI */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(5, 60px);
-    gap: 5px;
-    justify-content: center;
-    margin-top: 10px;
-}
+        .rolling { animation: rollSymbol 0.1s infinite linear; }
+        @keyframes rollSymbol {
+            0% { transform: translateY(-50%); opacity: 0.3; }
+            100% { transform: translateY(50%); opacity: 0.3; }
+        }
 
-.box {
-    width: 60px; height: 60px;
-    background: rgba(0,0,0,0.8);
-    border: 2px solid gold;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px; overflow: hidden; position: relative;
-}
+        /* ANIMASI MELEDAK HANYA PADA SIMBOL */
+        .symbol-win { 
+            animation: explodeSymbol 1s forwards; 
+        }
 
-.symbol-text { display: inline-block; will-change: transform; }
-.rolling { animation: rollSymbol 0.1s infinite linear; }
-@keyframes rollSymbol {
-    0% { transform: translateY(-100%); opacity: 0.2; }
-    100% { transform: translateY(100%); opacity: 0.2; }
-}
+        @keyframes explodeSymbol {
+            0% { transform: scale(1); filter: brightness(1); opacity: 1; }
+            50% { transform: scale(1.6); filter: brightness(2); text-shadow: 0 0 15px gold; opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
 
-.win { animation: boom 0.6s ease-in-out; background: linear-gradient(45deg, orange, yellow) !important; }
-@keyframes boom {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(0); }
-}
+        /* Highlight kotak saat menang (opsional, agar jelas kotak mana yang menang) */
+        .box-win-highlight {
+            border-color: white !important;
+            box-shadow: 0 0 10px gold;
+        }
 
-.combo { height: 40px; font-size: 26px; color: #fff700; font-weight: bold; text-shadow: 0 0 10px red; }
-.summary-container { display: flex; justify-content: center; gap: 15px; margin-top: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px; border: 1px solid gold; }
+        .combo { height: 40px; font-size: 26px; color: #fff700; font-weight: bold; text-shadow: 0 0 10px red; margin: 10px 0; }
+        
+        .summary-container { display: flex; justify-content: center; gap: 15px; margin-top: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 8px; border: 1px solid gold; }
 .summary-item { display: flex; flex-direction: column; font-size: 11px; }
-.summary-value { font-weight: bold; font-size: 14px; }
+        }
+        .summary-item { display: flex; flex-direction: column; font-size: 10px; }
+        .summary-value { font-weight: bold; font-size: 13px; }
 
-.action-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 8px; align-items: center; }
-.btn-action { width: 85px; height: 35px; font-size: 11px; font-weight: bold; border-radius: 5px; border: none; color: white; }
-.btn-topup { background: #28a745; } .btn-tarik { background: #dc3545; }
-#playerNameDisplay { font-weight: bold; color: #00d4ff; font-size: 14px; }
+        .action-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 8px; align-items: center; }
+        .btn-action { width: 85px; height: 35px; font-size: 11px; font-weight: bold; border-radius: 5px; border: none; color: white; cursor: pointer; }
 
-button.spin-btn { width: 160px; height: 55px; font-size: 22px; margin-top: 10px; cursor: pointer; background: gold; border-radius: 12px; font-weight: bold; }
-#bigText { position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 55px; font-weight: bold; color: white; text-shadow: 0 0 20px red; z-index: 9999; }
-.bigShow { transform: translate(-50%, -50%) scale(1.1); }
-</style>
+        .controls { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+        .spin-btn { width: 140px; height: 50px; font-size: 20px; cursor: pointer; background: gold; border: none; border-radius: 12px; font-weight: bold; box-shadow: 0 4px 0 #b8860b; }
+        
+        #imageOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); display: none;
+            justify-content: center; align-items: center; z-index: 30000;
+        }
+    </style>
 </head> 
 <body>
 
 <div id="welcomeModal">
     <div class="modal-content">
-        <h2>SELAMAT!</h2>
-        <p>Anda mendapatkan Bonus Saldo Awal:</p>
-        <span class="gift-text">Rp 1.000.000,00</span>
-        <p style="font-size: 14px; color: #aaa;">Saldo bisa langsung di WD!</p>
-        <button class="btn-start" onclick="startApp()">LOG IN & KLAIM</button>
-    </div>
+        <h2 style="color:gold">SELAMAT!</h2>
+        <p>Bonus Saldo Awal:</p>
+        <span style="font-size:24px; color:#00ff00; font-weight:bold; display:block; margin:10px 0;">Rp 1.000.000,00</span>
+        <button class="btn-start" style="padding:10px 20px; font-weight:bold; cursor:pointer;" onclick="startApp()">LOG IN & KLAIM</button>
+        </div>
 </div>
 
 <h2 style="color: gold; margin: 5px 0;">WINTRUS GACOR</h2>
-<div id="coin" style="font-size: 24px; color: #00ff00; font-weight: bold;">Rp 0</div>
+<div id="coin" style="font-size: 28px; color: #00ff00; font-weight: bold;">Rp 1.000.000</div>
 <div id="combo" class="combo"></div>
 <div id="grid" class="grid"></div>
 
-
-<div style="display: flex; justify-content: center; gap: 10px; align-items: center;">
+<div class="controls">
     <button class="spin-btn" onclick="spin()">SPIN</button>
-    <button id="autoBtn" class="spin-btn" style="width: 100px; background: #555; color: white;" onclick="toggleAuto()">AUTO: OFF</button>
+    <button id="autoBtn" style="width:100px; background:#444; color:white; border:none; border-radius:12px; cursor:pointer;" onclick="toggleAuto()">AUTO: OFF</button>
 </div>
 
-
 <div class="summary-container">
-    <div class="summary-item"><span>MODAL</span><span id="res-modal" class="summary-value">0</span></div>
+    <div class="summary-item"><span>MODAL</span><span id="res-modal" class="summary-value">1.000.000</span></div>
     <div class="summary-item"><span>MENANG</span><span id="res-win" class="summary-value" style="color: #00ff00;">0</span></div>
     <div class="summary-item"><span>KALAH</span><span id="res-lose" class="summary-value" style="color: #ff4444;">0</span></div>
 </div>
 
 <div class="action-buttons">
-    <div id="playerNameDisplay"></div>
-    <button class="btn-action btn-topup" onclick="showActionImage('hor.jpeg')">TOP UP</button>
-    <button class="btn-action btn-tarik" onclick="showActionImage('hor.jpeg')">TARIK</button>
+    <div id="playerNameDisplay" style="color: #00d4ff; font-weight: bold; font-size: 12px;">GUEST</div>
+    <button class="btn-action" style="background: #28a745;" onclick="showPrank('hor.jpeg')">TOP UP</button>
+    <button class="btn-action" style="background: #dc3545;" onclick="showPrank('hor.jpeg')">TARIK</button>
 </div>
 
-
-<div id="bigText"></div>
+<div id="imageOverlay" onclick="this.style.display='none'">
+    <img id="displayImg" src="" style="max-width: 90%; border: 3px solid gold; border-radius: 15px;">
+</div>
 
 <script>
-let icons = ["🍒", "🍒", "🍋", "7", "⭐", "💎"]; 
-let ROW = 4, COL = 5;
-let coin = 1000000; // Modal awal
-let totalMenang = 0, totalKalah = 0, comboCount = 0;
-let grid = [], boxSpans = [];
+// --- INISIALISASI AUDIO ---
+const sWin = new Audio("cring.mp3");
 
-let gridDiv = document.getElementById("grid");
-let coinDiv = document.getElementById("coin");
-let comboDiv = document.getElementById("combo");
-let bigTextDiv = document.getElementById("bigText");
+function playCring() {
+    sWin.currentTime = 0; 
+    sWin.play().catch(e => console.log("Audio diblokir."));
+}
 
-let sClick = new Audio("cring.mp3");
-let sWin = new Audio("cring.mp3");
-// Ganti 'duit.mp3' dengan nama file suara uang/koin Anda
-let sCash = new Audio("wrong.mp3");
-sCash.preload = "auto";
+let icons = ["🍒", "🍋", "7", "⭐", "💎", "🍇"]; 
+let ROW = 4, COL = 5, coin = 1000000, totalMenang = 0, totalKalah = 0, comboCount = 0;
+let grid = [], boxSpans = [], isAuto = false, isSpinning = false;
 
-let isAuto = false;
-let autoInterval = null;
+// Init Grid Visual
+const gridDiv = document.getElementById("grid");
+for (let i = 0; i < ROW * COL; i++) {
+    let d = document.createElement("div"); d.className = "box";
+    let span = document.createElement("span"); span.className = "symbol-text"; span.innerHTML = icons[Math.floor(Math.random()*icons.length)];
+    d.appendChild(span); gridDiv.appendChild(d); boxSpans.push(span);
+}
+
+function startApp() {
+    let name = prompt("Masukkan Nama Anda:");
+    document.getElementById("playerNameDisplay").innerText = (name || "GUEST").toUpperCase();
+    document.getElementById("welcomeModal").style.display = "none";
+    sWin.play().then(() => { sWin.pause(); sWin.currentTime = 0; }).catch(() => {});
+}
 
 function toggleAuto() {
     isAuto = !isAuto;
-    const btn = document.getElementById("autoBtn");
-    
-    if (isAuto) {
-        btn.innerHTML = "AUTO: ON";
-        btn.style.background = "#ff4444"; // Berubah warna jadi merah saat aktif
-        startAuto();
-    } else {
-        btn.innerHTML = "AUTO: OFF";
-        btn.style.background = "#555";
-        clearTimeout(autoInterval);
-    }
-}
-
-function startAuto() {
-    if (!isAuto) return;
-    
-    // Jika saldo masih cukup, jalankan spin
-    if (coin >= 500) {
-        spin();
-        
-        // Tunggu putaran selesai + animasi jatuh (sekitar 2.5 - 3 detik total)
-        // baru kemudian jalankan putaran berikutnya
-        autoInterval = setTimeout(startAuto, 3000); 
-    } else {
-        alert("Saldo Habis, Auto Spin Berhenti.");
-        toggleAuto();
-    }
-}
-
-
-// Fungsi Mulai Aplikasi (Log In)
-function startApp() {
-    let name = prompt("Masukkan Nama Anda untuk Klaim Hadiah:");
-    if (!name) name = "PLAYER";
-    
-    document.getElementById("welcomeModal").style.display = "none";
-    document.body.style.overflow = "auto";
-    document.getElementById("playerNameDisplay").innerHTML = "PLAYER: " + name.toUpperCase();
-    
-    // Inisialisasi awal
-    updateStats();
-    playSfx(sWin); // Bunyi kemenangan saat klaim
-}
-
-// Inisialisasi Grid di awal (tapi tidak terlihat sebelum modal tutup)
-for (let i = 0; i < ROW * COL; i++) {
-    let d = document.createElement("div");
-    d.className = "box";
-    let span = document.createElement("span");
-    span.className = "symbol-text";
-    span.innerHTML = icons[Math.floor(Math.random()*icons.length)];
-    d.appendChild(span);
-    gridDiv.appendChild(d);
-    boxSpans.push(span);
-}
-
-function playSfx(audio) {
-    audio.currentTime = 0;
-    audio.play().catch(()=>{}); 
+    document.getElementById("autoBtn").innerHTML = isAuto ? "AUTO: ON" : "AUTO: OFF";
+    document.getElementById("autoBtn").style.background = isAuto ? "#ff4444" : "#444";
+    if (isAuto && !isSpinning) spin();
 }
 
 function updateStats() {
-    let formatted = coin.toLocaleString('id-ID');
-    coinDiv.innerHTML = "Rp " + formatted;
-    document.getElementById("res-modal").innerHTML = formatted;
-    document.getElementById("res-win").innerHTML = totalMenang.toLocaleString('id-ID');
-    document.getElementById("res-lose").innerHTML = totalKalah.toLocaleString('id-ID');
+    let f = coin.toLocaleString('id-ID');
+    document.getElementById("coin").innerText = "Rp " + f;
+    document.getElementById("res-modal").innerText = f;
+    document.getElementById("res-win").innerText = totalMenang.toLocaleString('id-ID');
+    document.getElementById("res-lose").innerText = totalKalah.toLocaleString('id-ID');
 }
 
 function spin() {
-    if (coin < 500) { alert("Koin Habis!"); return; }
-    comboCount = 0;
-    comboDiv.innerHTML = "";
+    if (isSpinning || coin < 500) return;
+    isSpinning = true; comboCount = 0;
+    document.getElementById("combo").innerHTML = "";
+    coin -= 500; totalKalah += 500; updateStats();
 
-    coin -= 500; totalKalah += 500;
-    
     boxSpans.forEach(span => {
-        span.parentElement.classList.remove("win");
+        // Reset state simbol dan kotak
+        span.classList.remove("symbol-win");
+        span.parentElement.classList.remove("box-win-highlight");
+        span.style.opacity = "1";
+        span.style.transform = "scale(1)";
         span.classList.add("rolling");
     });
 
     setTimeout(() => {
-        grid = [];
-        for (let r = 0; r < ROW; r++) {
-            let row = [];
-            for (let c = 0; c < COL; c++) { row.push(icons[Math.floor(Math.random() * icons.length)]); }
-            grid.push(row);
-        }
-        boxSpans.forEach(span => span.classList.remove("rolling"));
-        render();
+        boxSpans.forEach(s => s.classList.remove("rolling"));
+        generateGacor(); render();
         setTimeout(cek, 200);
-    }, 600);
+    }, 700);
+}
+
+function generateGacor() {
+    grid = [];
+    let gacor = Math.random() < 0.6; 
+    for (let r = 0; r < ROW; r++) {
+        let row = [];
+        for (let c = 0; c < COL; c++) {
+            if (gacor && c > 0 && Math.random() < 0.7) row.push(row[c-1]);
+            else row.push(icons[Math.floor(Math.random()*icons.length)]);
+        }
+        grid.push(row);
+    }
 }
 
 function render() {
     for (let r = 0; r < ROW; r++) {
         for (let c = 0; c < COL; c++) {
-            let i = r * COL + c;
-            boxSpans[i].innerHTML = grid[r][c] ?? "";
-            boxSpans[i].parentElement.classList.remove("win");
+            boxSpans[r*COL+c].innerHTML = grid[r][c] || "";
         }
     }
-    updateStats();
 }
 
 function cek() {
     let winNodes = new Set();
-    let isWin = false;
-
+    // Cek Horizontal
     for (let r = 0; r < ROW; r++) {
         for (let c = 0; c < COL - 2; c++) {
-            if (grid[r][c] && grid[r][c] === grid[r][c+1] && grid[r][c] === grid[r][c+2]) {
+            if (grid[r][c] && grid[r][c]===grid[r][c+1] && grid[r][c]===grid[r][c+2]) {
                 winNodes.add(r*COL+c); winNodes.add(r*COL+c+1); winNodes.add(r*COL+c+2);
-                isWin = true;
             }
         }
     }
+    // Cek Vertikal
     for (let c = 0; c < COL; c++) {
         for (let r = 0; r < ROW - 2; r++) {
-            if (grid[r][c] && grid[r][c] === grid[r+1][c] && grid[r][c] === grid[r+2][c]) {
+            if (grid[r][c] && grid[r][c]===grid[r+1][c] && grid[r][c]===grid[r+2][c]) {
                 winNodes.add(r*COL+c); winNodes.add((r+1)*COL+c); winNodes.add((r+2)*COL+c);
-                isWin = true;
             }
         }
     }
 
-    if (isWin) {
+    if (winNodes.size > 0) {
         comboCount++;
-        comboDiv.innerHTML = "COMBO X" + comboCount;
+        playCring();
+
+        let multiplier = comboCount + 1;
+        let bonus = (winNodes.size * 1000) * multiplier;
+        coin += bonus; totalMenang += bonus;
+        document.getElementById("combo").innerHTML = `COMBO X${comboCount} (+Rp ${bonus.toLocaleString()})`;
+        
         winNodes.forEach(idx => {
-            boxSpans[idx].parentElement.classList.add("win");
+            // Animasi meledak pada SIMBOL (span), bukan kotak
+            boxSpans[idx].classList.add("symbol-win");
+            // Highlight kotak (opsional)
+            boxSpans[idx].parentElement.classList.add("box-win-highlight");
             grid[Math.floor(idx/COL)][idx%COL] = null;
         });
-        let bonus = 10000 * comboCount;
-        coin += bonus; totalMenang += bonus;
-        playSfx(sWin);
-        setTimeout(() => { jatuh(); }, 600);
+
+        setTimeout(jatuh, 1000);
     } else {
-        updateStats();
+        isSpinning = false;
+        if (isAuto) setTimeout(spin, 800);
     }
+    updateStats();
 }
 
 function jatuh() {
     for (let c = 0; c < COL; c++) {
-        let stack = [];
-        for (let r = ROW - 1; r >= 0; r--) { if (grid[r][c] !== null) stack.push(grid[r][c]); }
-        for (let r = ROW - 1; r >= 0; r--) { 
-            grid[r][c] = (stack.length > 0) ? stack.shift() : icons[Math.floor(Math.random() * icons.length)]; 
+        let colSymbols = [];
+        for (let r = ROW - 1; r >= 0; r--) if (grid[r][c] !== null) colSymbols.push(grid[r][c]);
+        for (let r = ROW - 1; r >= 0; r--) {
+            grid[r][c] = colSymbols.length > 0 ? colSymbols.shift() : icons[Math.floor(Math.random()*icons.length)];
+            
+            let span = boxSpans[r*COL+c];
+            // Reset state animasi simbol saat simbol baru muncul/jatuh
+            span.classList.remove("symbol-win");
+            span.parentElement.classList.remove("box-win-highlight");
+            span.style.opacity = "1"; 
+            span.style.transform = "scale(1)";
         }
     }
     render();
-    setTimeout(cek, 400);
-}
-// Fungsi untuk menampilkan gambar prank
-function showActionImage(imgSrc) {
-    // 1. Ambil elemen overlay dan gambarnya
-    const overlay = document.getElementById("imageOverlay");
-    const displayImg = document.getElementById("displayImg");
-    
-    // 2. Masukkan nama file gambar ke dalam src
-    displayImg.src = imgSrc;
-    
-    // 3. Tampilkan overlaynya
-    overlay.style.display = "flex";
-    sCash.currentTime = 0; 
-    sCash.play().catch(()=>{});
+    setTimeout(cek, 300);
 }
 
-
-// Fungsi utama untuk memunculkan overlay gambar
-function showActionImage(imgSrc) {
-    const overlay = document.getElementById("imageOverlay");
-    const displayImg = document.getElementById("displayImg");
-    
-    displayImg.src = imgSrc;
-    overlay.style.display = "flex";
+function showPrank(src) {
+    document.getElementById("displayImg").src = src;
+    document.getElementById("imageOverlay").style.display = "flex";
 }
-
 </script>
-<div id="imageOverlay" onclick="this.style.display='none'" style="
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(0,0,0,0.95); 
-    display: none; 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 30000;
-    cursor: pointer;">
-    
-    <div style="text-align: center; width: 90%;">
-        <img id="displayImg" src="" style="
-            max-width: 100%; 
-            max-height: 80vh; 
-            border: 2px solid gold; 
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(255,215,0,0.5);">
-        
-        <p style="color: gold; margin-top: 20px; font-weight: bold; font-size: 14px;">
-            Selesai! Klik di mana saja untuk kembali.
-        </p>
-    </div>
-</div>
-
-
 </body>
 </html>
