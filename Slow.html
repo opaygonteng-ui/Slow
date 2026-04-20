@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WINTRUS GACOR - SING DEMI</title>
+    <title>WINTRUS GACOR - SIMBOL MELEDAK</title>
     <style>
         body {
           background: url('em.png') center/cover no-repeat fixed;
@@ -131,6 +131,8 @@
 <script>
 // --- INISIALISASI AUDIO ---
 const sWin = new Audio("cring.mp3");
+const sBohong = new Audio("bohong.mp3"); 
+
 
 function playCring() {
     sWin.currentTime = 0; 
@@ -278,6 +280,10 @@ function jatuh() {
 }
 
 function showPrank(src) {
+    // Memutar suara bohong
+    sBohong.currentTime = 0;
+    sBohong.play().catch(e => console.log("Audio diblokir oleh browser."));
+
     document.getElementById("displayImg").src = src;
     document.getElementById("imageOverlay").style.display = "flex";
 }
